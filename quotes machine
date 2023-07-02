@@ -1,0 +1,47 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const QuoteMachine = () => {
+  const [quote, setQuote] = useState('');
+  const [author, setAuthor] = useState('');
+
+  useEffect(() => {
+    fetchQuote();
+  }, []);
+
+  const fetchQuote = async () => {
+    try {
+      const response = await axios.get('https://api.example.com/quotes');
+      const { quote, author } = response.data;
+      setQuote(quote);
+      setAuthor(author);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleNewQuote = () => {
+    fetchQuote();
+  };
+
+  const handleTweetQuote = () => {
+    const tweetText = encodeURIComponent(`"${quote}" - ${author}`);
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
+    window.open(tweetUrl);
+  };
+
+  return (
+    <div id="quote-box">
+      <div id="text">{quote}</div>
+      <div id="author">{author}</div>
+      <button id="new-quote" onClick={handleNewQuote}>
+        New Quote
+      </button>
+      <a id="tweet-quote" href="#" onClick={handleTweetQuote}>
+        Tweet Quote
+      </a>
+    </div>
+  );
+};
+
+export default QuoteMachine;
